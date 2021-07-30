@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: gke-test
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: gke-test
@@ -32,10 +32,10 @@ spec:
         app: gke-test
     spec:
       containers:
-      - name: gke-test
-        image: gcr.io/PROJECT_ID/IMAGE:TAG
+      - name: nginx
+        image: nginx:1.14.2
         ports:
-        - containerPort: 5000
+        - containerPort: 80
         resources:
           requests:
             cpu: 100m
