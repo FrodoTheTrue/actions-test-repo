@@ -32,8 +32,8 @@ spec:
         app: gke-hello-world
     spec:
       containers:
-      - name: us-docker.pkg.dev/google-samples/containers/gke
-        image: hello-app:1.0
+      - name: hello-app
+        image: gcr.io/google-samples/hello-app:1.0
         ports:
         - containerPort: 80
         resources:
