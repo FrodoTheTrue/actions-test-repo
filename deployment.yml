@@ -32,8 +32,8 @@ spec:
         app: gke-hello-world
     spec:
       containers:
-      - name: nginx
-        image: us-docker.pkg.dev/google-samples/containers/gke/hello-app:1.0
+      - name: us-docker.pkg.dev/google-samples/containers/gke
+        image: hello-app:1.0
         ports:
         - containerPort: 80
         resources:
