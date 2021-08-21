@@ -45,7 +45,7 @@ jobs:
     # Configure Docker to use the gcloud command-line tool as a credential
     # helper for authentication
     - run: |-
-        gcloud --quiet auth configure-docker us-central1-docker.pkg.dev
+        gcloud --quiet auth configure-docker $GKE_ZONE-docker.pkg.dev
 
     # Get the GKE credentials so we can deploy to the cluster
     - run: |-
@@ -74,7 +74,7 @@ jobs:
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |-
-        ./kustomize edit set image $GKE_ZONE-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA
+        ./kustomize edit set image LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE:GITHUB_SHA=$GKE_ZONE-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA
         ./kustomize build . | kubectl apply -f -
         kubectl rollout status deployment/$DEPLOYMENT_NAME
         kubectl get services -o wide
