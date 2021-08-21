@@ -8,23 +8,23 @@ update values to match your setup.
 
 ## Workflow description
 
-For pushes to the `master` branch, this workflow will:
+For pushes to the `main` branch, this workflow will:
 
 1.  Download and configure the Google [Cloud SDK][sdk] with the provided
     credentials.
 
-1.  Build, tag, and push a container image to Google Container Registry.
+1.  Build, tag, and push a container image to Google Artifact Registry.
 
 1.  Use a Kubernetes Deployment to push the image to the cluster.
 
     - Note that a GKE deployment requires a unique Tag to update the pods. Using
-      a constant tag `latest` or a branch name `master` may result in successful
+      a constant tag `latest` or a branch name `main` may result in successful
       workflows that don't update the cluster.
 
 ## Setup
 
 1.  Create a new Google Cloud Project (or select an existing project) and
-    [enable the Container Registry and Kubernetes Engine APIs](https://console.cloud.google.com/flows/enableapi?apiid=containerregistry.googleapis.com,container.googleapis.com).
+    [enable the Artifact Registry and Kubernetes Engine APIs](https://console.cloud.google.com/flows/enableapi?apiid=artifactregistry.googleapis.com,container.googleapis.com).
 
 1.  [Create a new GKE cluster][cluster] or select an existing GKE cluster.
 
@@ -41,24 +41,28 @@ For pushes to the `master` branch, this workflow will:
     1.  Copy the example into the repository:
 
         ```
-        $ cp -r <path_to>/github-actions/example-workflows/gke/ .
+        $ cp -r <path_to>/github-actions/example-workflows/gke-kustomize/ .
         ```
 
 1.  [Create a Google Cloud service account][create-sa] if one does not already
     exist.
 
+1.  [Create an Antifact Registry docker repository](https://cloud.google.com/artifact-registry/docs/docker/quickstart#gcloud) if one does not already exist
+
 1.  Add the the following [Cloud IAM roles][roles] to your service account:
 
     - `Kubernetes Engine Developer` - allows deploying to GKE
 
-    - `Storage Admin` - allows publishing to Container Registry
+    - `Artifact Registry Writer` - allows publishing to Artifact Registry
 
-    Note: These permissions are overly broad to favor a quick start. They do not
+    **Note**: *These permissions are overly broad to favor a quick start. They do not
     represent best practices around the Principle of Least Privilege. To
     properly restrict access, you should create a custom IAM role with the most
-    restrictive permissions.
+    restrictive permissions.*
 
 1.  [Create a JSON service account key][create-key] for the service account.
+
+    **Note**: *You won't require this if you are using [self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners)*
 
 1.  Add the following secrets to your repository's secrets:
 
@@ -66,7 +70,7 @@ For pushes to the `master` branch, this workflow will:
 
     - `GKE_SA_KEY`: the content of the service account JSON file
 
-1.  Update `.github/workflows/gke.yml` to match the values corresponding to your
+1.  Update `.github/workflows/gke-kustomize.yml` to match the values corresponding to your
     VM:
 
     - `GKE_CLUSTER` - the instance name of your cluster
@@ -78,7 +82,7 @@ For pushes to the `master` branch, this workflow will:
     You can find the names of your clusters using the command:
 
     ```
-    $ gcloud container clusters list
+    $ gcloud container clusters list --project $PROJECT_ID
     ```
 
     and the zone using the command:
@@ -96,10 +100,10 @@ For pushes to the `master` branch, this workflow will:
     $ git commit -m "Set up GitHub workflow"
     ```
 
-1.  Push to the `master` branch:
+1.  Push to the `main` branch:
 
     ```text
-    $ git push -u origin master
+    $ git push -u origin main
     ```
 
 1.  View the GitHub Actions Workflow by selecting the `Actions` tab at the top
